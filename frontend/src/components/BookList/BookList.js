@@ -12,10 +12,10 @@ const BookList = () => {
       ) : (
         // если books не пустой массив, то будет показана инф о книге
         <ul>
-          {books.map((books, i) => (
-            <li key={i}>
+          {books.map((book, i) => (
+            <li key={book.id}>
               <div className="book-info">
-                {++i}. {books.title} by <strong>{books.author}</strong>
+                {++i}. {book.title} by <strong>{book.author}</strong>
               </div>
             </li>
           ))}
