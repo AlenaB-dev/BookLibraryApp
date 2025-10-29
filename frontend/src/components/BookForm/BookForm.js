@@ -18,6 +18,7 @@ const BookForm = () => {
     const randomBookWithID = {
       ...randomBook,
       id: uuidv4(),
+      isFavorite: false,
     };
     // отправляем действие в redux store
     dispatch(addBook(randomBookWithID));
@@ -32,6 +33,7 @@ const BookForm = () => {
         title,
         author,
         id: uuidv4(),
+        isFavorite: false,
       };
       dispatch(addBook(book));
       setTitle("");
