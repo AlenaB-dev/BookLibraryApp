@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid"; // генерация уникального id
 import { addBook } from "../../redux/books/actionCreators.js";
+import createBookWithID from "../../utils/createBookWithID.js";
 import booksData from "../../data/books.json";
 import "./BookForm.css";
 
@@ -12,30 +12,15 @@ const BookForm = () => {
 
   const handleAddRandomBook = () => {
     const randomIndex = Math.floor(Math.random() * booksData.length); // случайный выбор книги
-    const randomBook = booksData[randomIndex];
-
-    // информация о случайно выбранной книге плюс id
-    const randomBookWithID = {
-      ...randomBook,
-      id: uuidv4(),
-      isFavorite: false,
-    };
-    // отправляем действие в redux store
-    dispatch(addBook(randomBookWithID));
+    const randomBook = booksData[randomIndex]; // формируем книгу случайным образом
+    dispatch(addBook(createBookWithID(randomBook))); // передаем в функцию createBookWithID -> результат в функцию addBook -> и далее результат в dispatch
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(); //исключает перенаправление на новую страницу
 
     if (title && author) {
-      // dispatch action
-      const book = {
-        title,
-        author,
-        id: uuidv4(),
-        isFavorite: false,
-      };
-      dispatch(addBook(book));
+      dispatch(addBook(createBookWithID({ title, author })));
       setTitle("");
       setAuthor("");
     }
