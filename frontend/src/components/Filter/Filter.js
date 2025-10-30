@@ -3,6 +3,7 @@ import "./Filter.css";
 import {
   setTitleFilter,
   selectTitleFilter,
+  resetFilters,
 } from "../../redux/sclices/filterSlice";
 
 const Filter = () => {
@@ -13,15 +14,24 @@ const Filter = () => {
     dispatch(setTitleFilter(e.target.value)); // передаем изменения в redux store
   };
 
+  const handleResetFilters = () => {
+    dispatch(resetFilters());
+  };
+
   return (
     <div className="app-block filter">
-      <div className="filter-group">
-        <input
-          type="text"
-          value={titleFilter}
-          placeholder="Filter by title..."
-          onChange={handleTitleFilterChange}
-        />
+      <div className="filter-row">
+        <div className="filter-group">
+          <input
+            type="text"
+            value={titleFilter}
+            placeholder="Filter by title..."
+            onChange={handleTitleFilterChange}
+          />
+        </div>
+        <button type="button" onClick={handleResetFilters}>
+          Reset Filters
+        </button>
       </div>
     </div>
   );

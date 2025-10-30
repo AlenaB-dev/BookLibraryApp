@@ -15,10 +15,13 @@ const filterSlice = createSlice({
       // traditional way of return new state
       // return {...state, title: action.payload}
     },
+    resetFilters: (state) => {
+      return initialState;
+    },
   },
 });
 
-export const { setTitleFilter } = filterSlice.actions; // action creator
+export const { setTitleFilter, resetFilters } = filterSlice.actions; // action creator
 
 export const selectTitleFilter = (state) => state.filter.title; // подписка на изменения в значении title в filter
 
