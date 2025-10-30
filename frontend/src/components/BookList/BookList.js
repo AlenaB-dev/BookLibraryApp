@@ -1,10 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { BsBookmarkStar, BsBookmarkStarFill } from "react-icons/bs";
 import { deleteBook, toggleFavorite } from "../../redux/books/actionCreators";
+import { selectTitleFilter } from "../../redux/sclices/filterSlice";
 import "./BookList.css";
 
 const BookList = () => {
   const books = useSelector((state) => state.books); // state.books - название reducer и оно должно совпадавть с названием  books в store.js
+  const titleFilter = useSelector(selectTitleFilter);
   const dispatch = useDispatch();
 
   //функция удаления книги
@@ -17,6 +19,14 @@ const BookList = () => {
     dispatch(toggleFavorite(id));
   };
 
+  // функция фильтрации книг
+  const filteredBooks = books.filter((book) => {
+    const matchesTitle = book.title
+      .toLowerCase()
+      .includes(titleFilter.toLowerCase());
+    return matchesTitle;
+  });
+
   return (
     <div className="app-block book-list">
       <h2>Book List</h2>
@@ -25,7 +35,7 @@ const BookList = () => {
       ) : (
         // если books не пустой массив, то будет показана инф о книге
         <ul>
-          {books.map((book, i) => (
+          {filteredBooks.map((book, i) => (
             <li key={book.id}>
               <div className="book-info">
                 {++i}. {book.title} by <strong>{book.author}</strong>
