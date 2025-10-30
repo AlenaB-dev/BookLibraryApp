@@ -1,12 +1,16 @@
 import { useSelector, useDispatch } from "react-redux";
 import { BsBookmarkStar, BsBookmarkStarFill } from "react-icons/bs";
 import { deleteBook, toggleFavorite } from "../../redux/books/actionCreators";
-import { selectTitleFilter } from "../../redux/sclices/filterSlice";
+import {
+  selectTitleFilter,
+  selectAuthorFilter,
+} from "../../redux/sclices/filterSlice";
 import "./BookList.css";
 
 const BookList = () => {
   const books = useSelector((state) => state.books); // state.books - название reducer и оно должно совпадавть с названием  books в store.js
   const titleFilter = useSelector(selectTitleFilter);
+  const authorFilter = useSelector(selectAuthorFilter);
   const dispatch = useDispatch();
 
   //функция удаления книги
@@ -19,12 +23,15 @@ const BookList = () => {
     dispatch(toggleFavorite(id));
   };
 
-  // функция фильтрации книг
+  // функция фильтрации книг по title & author
   const filteredBooks = books.filter((book) => {
     const matchesTitle = book.title
       .toLowerCase()
       .includes(titleFilter.toLowerCase());
-    return matchesTitle;
+    const matchesAuthor = book.author
+      .toLowerCase()
+      .includes(authorFilter.toLowerCase());
+    return matchesTitle && matchesAuthor;
   });
 
   return (

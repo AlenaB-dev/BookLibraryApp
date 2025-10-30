@@ -4,14 +4,21 @@ import {
   setTitleFilter,
   selectTitleFilter,
   resetFilters,
+  setAuthorFilter,
+  selectAuthorFilter,
 } from "../../redux/sclices/filterSlice";
 
 const Filter = () => {
   const dispatch = useDispatch();
   const titleFilter = useSelector(selectTitleFilter); // вызов функции подписки на изменения в значении title в filter
+  const authorFilter = useSelector(selectAuthorFilter);
 
   const handleTitleFilterChange = (e) => {
-    dispatch(setTitleFilter(e.target.value)); // передаем изменения в redux store
+    dispatch(setTitleFilter(e.target.value)); // передаем изменения title в redux store
+  };
+
+  const handleAuthorFilterChange = (e) => {
+    dispatch(setAuthorFilter(e.target.value));
   };
 
   const handleResetFilters = () => {
@@ -27,6 +34,14 @@ const Filter = () => {
             value={titleFilter}
             placeholder="Filter by title..."
             onChange={handleTitleFilterChange}
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            value={authorFilter}
+            placeholder="Filter by author..."
+            onChange={handleAuthorFilterChange}
           />
         </div>
         <button type="button" onClick={handleResetFilters}>
