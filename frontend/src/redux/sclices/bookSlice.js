@@ -34,14 +34,19 @@ const booksSlice = createSlice({
           book.isFavorite = !book.isFavorite;
         }
       }); // исп библиотеки immer
-
-      //   return state.map((book) =>
-      //     book.id === action.payload
-      //       ? { ...book, isFavorite: !book.isFavorite }
-      //       : book
-      //   ); //выбираем или удаляем фэйворит у книги
     },
   },
+
+  // // Option 1 - extraReducers without builder
+  // extraReducers: {
+  //   [fetchBook.fulfilled]: (state, action) => {
+  //     if (action.payload.title && action.payload.author) {
+  //       state.push(createBookWithID(action.payload, "API"));
+  //     }
+  //   },
+  // },
+
+  // Option 2 - extraReducers with builder
   extraReducers: (builder) => {
     builder.addCase(fetchBook.fulfilled, (state, action) => {
       if (action.payload.title && action.payload.author) {
