@@ -3,7 +3,10 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import createBookWithID from "../../utils/createBookWithID.js";
 import { setError } from "./errorSlice.js";
 
-const initialState = [];
+const initialState = {
+  books: [],
+  isLoadingViaAPI: false,
+};
 
 export const fetchBook = createAsyncThunk(
   "book/fetchBook",
@@ -13,7 +16,7 @@ export const fetchBook = createAsyncThunk(
       return res.data;
     } catch (error) {
       thunkAPI.dispatch(setError(error.message));
-      throw error;
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -23,13 +26,16 @@ const booksSlice = createSlice({
   initialState,
   reducers: {
     addBook: (state, action) => {
-      state.push(action.payload); // добавление и вовзрат нового массива книг c исп библиотеки immer
+      state.books.push(action.payload); // добавление и вовзрат нового массива книг c исп библиотеки immer
     },
     deleteBook: (state, action) => {
-      return state.filter((book) => book.id !== action.payload);
+      return {
+        ...state,
+        books: state.books.filter((book) => book.id !== action.payload),
+      };
     },
     toggleFavorite: (state, action) => {
-      state.forEach((book) => {
+      state.books.forEach((book) => {
         if (book.id === action.payload) {
           book.isFavorite = !book.isFavorite;
         }
@@ -37,22 +43,18 @@ const booksSlice = createSlice({
     },
   },
 
-  // // Option 1 - extraReducers without builder
-  // extraReducers: {
-  //   [fetchBook.fulfilled]: (state, action) => {
-  //     if (action.payload.title && action.payload.author) {
-  //       state.push(createBookWithID(action.payload, "API"));
-  //     }
-  //   },
-  // },
-
-  // Option 2 - extraReducers with builder
   extraReducers: (builder) => {
-    builder.addCase(fetchBook.fulfilled, (state, action) => {
-      if (action.payload.title && action.payload.author) {
-        state.push(createBookWithID(action.payload, "API"));
-      }
-    });
+    builder
+      .addCase(fetchBook.pending, (state) => {
+        state.isLoadingViaAPI = true;
+      })
+      .addCase(fetchBook.fulfilled, (state, action) => {
+        state.isLoadingViaAPI = false;
+        state.books.push(createBookWithID(action.payload, "API"));
+      })
+      .addCase(fetchBook.rejected, (state) => {
+        state.isLoadingViaAPI = false;
+      });
   },
 });
 
@@ -60,6 +62,8 @@ const booksSlice = createSlice({
 export const { addBook, deleteBook, toggleFavorite } = booksSlice.actions;
 
 // создали селектор
-export const selectBooks = (state) => state.books;
+export const selectBooks = (state) => state.books.books; // возврат массива книг
+
+export const selectIsLoadingViaAPI = (state) => state.books.isLoadingViaAPI; // возврат значения isLoadingViaAPI
 
 export default booksSlice.reducer;
